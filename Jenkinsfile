@@ -33,8 +33,7 @@ pipeline {
     }
     stage('Stop Test Application') {
       steps {
-        powershell(script: 'docker-compose down') 
-        powershell(script: 'docker volumes prune -f')   		
+        powershell(script: 'docker-compose down')   		
       }
       post {
 	    success {
