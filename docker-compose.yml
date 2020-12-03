@@ -31,7 +31,7 @@ services:
 
     identity:
         container_name: identity
-        image: ivaylokenov/carrentalsystem-identity-service
+        image: mkolova/carrentalsystem-identity-service
         build:
             context: ./Server
             dockerfile: ./CarRentalSystem.Identity/Dockerfile
@@ -51,7 +51,7 @@ services:
             
     dealers:
         container_name: dealers
-        image: ivaylokenov/carrentalsystem-dealers-service
+        image: mkolova/carrentalsystem-dealers-service
         build:
             context: ./Server
             dockerfile: ./CarRentalSystem.Dealers/Dockerfile
@@ -76,7 +76,7 @@ services:
             
     statistics:
         container_name: statistics
-        image: ivaylokenov/carrentalsystem-statistics-service
+        image: mkolova/carrentalsystem-statistics-service
         build:
             context: ./Server
             dockerfile: ./CarRentalSystem.Statistics/Dockerfile
@@ -101,7 +101,7 @@ services:
             
     notifications:
         container_name: notifications
-        image: ivaylokenov/carrentalsystem-notifications-service
+        image: mkolova/carrentalsystem-notifications-service
         build:
             context: ./Server
             dockerfile: ./CarRentalSystem.Notifications/Dockerfile
@@ -124,7 +124,7 @@ services:
 
     client:
         container_name: client
-        image: ivaylokenov/carrentalsystem-user-client
+        image: mkolova/carrentalsystem-user-client
         build:
             context: ./Client
             dockerfile: ./Dockerfile
@@ -141,7 +141,7 @@ services:
             
     admin:
         container_name: admin
-        image: ivaylokenov/carrentalsystem-admin-client
+        image: mkolova/carrentalsystem-admin-client
         build:
             context: ./Server
             dockerfile: ./CarRentalSystem.Admin/Dockerfile
@@ -164,7 +164,7 @@ services:
             
     watchdog:
         container_name: watchdog
-        image: ivaylokenov/carrentalsystem-watchdog-service
+        image: mkolova/carrentalsystem-watchdog-service
         build:
             context: ./Server
             dockerfile: ./CarRentalSystem.Watchdog/Dockerfile
