@@ -134,19 +134,17 @@ pipeline {
 				}
 			}
 		}
-		stage('Send Email Notification') {
-			post {			
-				success {
-					mail to: 'marina.kolova.359@gmail.com',
-					subject: "Success Pipeline: ${currentBuild.fullDisplayName}",
-					body: "Build with ${env.BUILD_URL} succeeded"
-				}
-				failure {
-					mail to: 'marina.kolova.359@gmail.com',
-					subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-					body: "Something is wrong with ${env.BUILD_URL}"
-				}
-			}
+	}
+	post {			
+		success {
+			mail to: 'marina.kolova.359@gmail.com',
+			subject: "Success Pipeline: ${currentBuild.fullDisplayName}",
+			body: "Build with ${env.BUILD_URL} succeeded"
+		}
+		failure {
+			mail to: 'marina.kolova.359@gmail.com',
+			subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+			body: "Something is wrong with ${env.BUILD_URL}"
 		}
 	}
 }
