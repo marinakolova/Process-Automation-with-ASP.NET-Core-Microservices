@@ -24,7 +24,9 @@ pipeline {
 			steps {
 				powershell(script: 'docker-compose build') 
 				powershell(script: 'docker build -t mkolova/carrentalsystem-user-client-development --build-arg configuration=development ./Client')
-				powershell(script: 'docker build -t mkolova/carrentalsystem-user-client-production --build-arg configuration=production ./Client')
+				if("$GIT_BRANCH" == 'origin/main') {
+					powershell(script: 'docker build -t mkolova/carrentalsystem-user-client-production --build-arg configuration=production ./Client')
+				}
 				powershell(script: 'docker images -a')
 			}
 		}
@@ -93,11 +95,6 @@ pipeline {
 				}
 			}
 		}
-		stage('Test Deplopment') {
-			steps {
-				powershell(script: './Tests/ContainerTestsDev.ps1')
-			}
-		}
 		stage('Ask permission') {
 			when { 
 				expression {
@@ -108,7 +105,7 @@ pipeline {
 				script{
 					try {
 						timeout(time: 60, unit: 'SECONDS') {
-							input message: 'Do you want to release this build?',
+							input message: 'Do you want to release this build to production?',
 							parameters: [[$class: 'BooleanParameterDefinition',
 									defaultValue: false,
 									description: 'Ticking this box will do a release',
@@ -135,8 +132,20 @@ pipeline {
 					powershell(script: 'kubectl apply -f ./.k8s/event-bus') 
 					powershell(script: 'kubectl apply -f ./.k8s/web-services') 
 					powershell(script: 'kubectl apply -f ./.k8s/clients') 
-					powershell(script: 'kubectl set image deployments/user-client user-client=mkolova/carrentalsystem-user-client-production:latest')
+					powershell(script: 'kubectl set image deployments/user-client user-client=mkolova/carrentalsystem-user-client-production:"1.0.${env.BUILD_ID}"')
 				}
+			}
+		}
+		post {
+			failure {
+				mail to: 'marina.kolova.359@gmail.com',
+				subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+				body: "Something is wrong with ${env.BUILD_URL}"
+			}
+			success {
+				mail to: 'marina.kolova.359@gmail.com',
+				subject: "Success Pipeline: ${currentBuild.fullDisplayName}",
+				body: "Build with ${env.BUILD_URL} succeeded"
 			}
 		}
 	}
