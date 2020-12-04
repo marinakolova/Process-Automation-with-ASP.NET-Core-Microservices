@@ -24,9 +24,7 @@ pipeline {
 			steps {
 				powershell(script: 'docker-compose build') 
 				powershell(script: 'docker build -t mkolova/carrentalsystem-user-client-development --build-arg configuration=development ./Client')
-				if("$GIT_BRANCH" == 'origin/main') {
-					powershell(script: 'docker build -t mkolova/carrentalsystem-user-client-production --build-arg configuration=production ./Client')
-				}
+				powershell(script: 'docker build -t mkolova/carrentalsystem-user-client-production --build-arg configuration=production ./Client')
 				powershell(script: 'docker images -a')
 			}
 		}
