@@ -19,6 +19,7 @@ pipeline {
 			steps {
 				powershell(script: 'docker-compose build') 
 				powershell(script: 'docker build -t mkolova/carrentalsystem-user-client-development --build-arg configuration=development ./Client')
+				powershell(script: 'docker build -t mkolova/carrentalsystem-user-client-production --build-arg configuration=production ./Client')
 				powershell(script: 'docker images -a')
 			}
 		}
@@ -84,6 +85,18 @@ pipeline {
 					powershell(script: 'kubectl apply -f ./.k8s/web-services') 
 					powershell(script: 'kubectl apply -f ./.k8s/clients') 
 					powershell(script: 'kubectl set image deployments/user-client user-client=mkolova/carrentalsystem-user-client-development:latest')
+				}
+			}
+		}
+		stage('Deploy Production') {
+			steps {
+				withKubeConfig([credentialsId: 'ProductionServer', serverUrl: 'https://34.67.141.88']) {
+					powershell(script: 'kubectl apply -f ./.k8s/.environment/production.yml') 
+					powershell(script: 'kubectl apply -f ./.k8s/databases') 
+					powershell(script: 'kubectl apply -f ./.k8s/event-bus') 
+					powershell(script: 'kubectl apply -f ./.k8s/web-services') 
+					powershell(script: 'kubectl apply -f ./.k8s/clients') 
+					powershell(script: 'kubectl set image deployments/user-client user-client=mkolova/carrentalsystem-user-client-production:latest')
 				}
 			}
 		}
