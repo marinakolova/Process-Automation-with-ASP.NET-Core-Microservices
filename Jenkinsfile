@@ -99,6 +99,7 @@ pipeline {
 			}
 		}
 		stage('Ask permission') {
+			when { "$GIT_BRANCH" == 'origin/main' }
 			steps {
 				script{
 					try {
@@ -118,6 +119,7 @@ pipeline {
 			}
 		}
 		stage('Deploy Production') {
+			when { "$GIT_BRANCH" == 'origin/main' }
 			steps {
 				withKubeConfig([credentialsId: 'ProductionServer', serverUrl: 'https://34.67.141.88']) {
 					powershell(script: 'kubectl apply -f ./.k8s/.environment/production.yml') 
