@@ -33,7 +33,8 @@ pipeline {
     }
     stage('Stop Test Application') {
       steps {
-        powershell(script: 'docker-compose down')   		
+        powershell(script: 'docker-compose down') 
+        powershell(script: 'docker volumes prune -f')   		
       }
       post {
 	    success {
@@ -42,6 +43,36 @@ pipeline {
 	    failure {
 	      echo "Build failed! You should receive an e-mail! :("
 	    }
+      }
+    }
+	stage('Push Images') {
+      when { branch 'main' }
+      steps {
+        script {
+          docker.withRegistry('https://index.docker.io/v1/', 'DockerHub') {
+            def image = docker.image("mkolova/carrentalsystem-identity-service")
+            image.push("1.0.${env.BUILD_ID}")
+            image.push('latest')
+			image = docker.image("mkolova/carrentalsystem-dealers-service")
+            image.push("1.0.${env.BUILD_ID}")
+            image.push('latest')
+			image = docker.image("mkolova/carrentalsystem-statistics-service")
+            image.push("1.0.${env.BUILD_ID}")
+            image.push('latest')
+			image = docker.image("mkolova/carrentalsystem-notifications-service")
+            image.push("1.0.${env.BUILD_ID}")
+            image.push('latest')
+			image = docker.image("mkolova/carrentalsystem-user-client")
+            image.push("1.0.${env.BUILD_ID}")
+            image.push('latest')
+			image = docker.image("mkolova/carrentalsystem-admin-client")
+            image.push("1.0.${env.BUILD_ID}")
+            image.push('latest')
+			image = docker.image("mkolova/carrentalsystem-watchdog-service")
+            image.push("1.0.${env.BUILD_ID}")
+            image.push('latest')
+          }
+        }
       }
     }
   }
