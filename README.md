@@ -11,7 +11,7 @@ And everything seemed to be there and working fine.
 
 But on the first production deploy I ran into QUOTA_EXCEEDED exception because gcp has 'IN_USE_ADDRESSES' Quota: 8.
 
-So from gcp's 'Network services -> Load balancing' I choose to remove the Forwarding rules for:
+So from gcp's 'Network services -> Load balancing -> Advanced menu' I choose to remove the Forwarding rules for:
 - dealers-service
 - identity-service
 - notifications-service
