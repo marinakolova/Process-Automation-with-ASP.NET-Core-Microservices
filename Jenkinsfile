@@ -6,6 +6,11 @@ pipeline {
 				echo "$GIT_BRANCH"
 			}
 		}
+		stage('Pull Changes') {
+			steps {
+				powershell(script: "git pull")
+			}
+		}
 		stage('Run Unit Tests') {
 			steps {
 				powershell(script: """ 
@@ -17,7 +22,8 @@ pipeline {
 		}
 		stage('Docker Build') {
 			steps {
-				powershell(script: 'docker-compose build')     
+				powershell(script: 'docker-compose build') 
+				powershell(script: 'docker build -t mkolova/carrentalsystem-user-client-development --build-arg configuration=development ./Client')
 				powershell(script: 'docker images -a')
 			}
 		}
@@ -33,7 +39,8 @@ pipeline {
 		}
 		stage('Stop Test Application') {
 			steps {
-				powershell(script: 'docker-compose down')   		
+				powershell(script: 'docker-compose down') 
+				// powershell(script: 'docker volumes prune -f')
 			}
 			post {
 				success {
@@ -70,6 +77,18 @@ pipeline {
 						image.push("1.0.${env.BUILD_ID}")
 						image.push('latest')
 					}
+				}
+			}
+		}
+		stage('Deploy Development') {
+			steps {
+				withKubeConfig([credentialsId: 'DevelopmentServer', serverUrl: 'https://34.123.37.162']) {
+					powershell(script: 'kubectl apply -f ./.k8s/.environment/development.yml') 
+					powershell(script: 'kubectl apply -f ./.k8s/databases') 
+					powershell(script: 'kubectl apply -f ./.k8s/event-bus') 
+					powershell(script: 'kubectl apply -f ./.k8s/web-services') 
+					powershell(script: 'kubectl apply -f ./.k8s/clients') 
+					powershell(script: 'kubectl set image deployments/user-client user-client=mkolova/carrentalsystem-user-client-development:latest')
 				}
 			}
 		}
