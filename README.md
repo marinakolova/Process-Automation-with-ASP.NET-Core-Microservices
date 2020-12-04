@@ -32,3 +32,5 @@ Now I have:
 - http://34.69.213.76:5500/healthchecks - watchdog-client (production)
 
 But there are some features missing... That was the price... :D
+
+![Jenkins-Pipeline-Build-Screenshot](https://raw.githubusercontent.com/marinakolova/Process-Automation-with-ASP.NET-Core-Microservices/main/Jenkins-Pipeline-Build-Screenshot.png)
