@@ -29,6 +29,6 @@ Now I have:
 
 - http://35.223.12.85:5000/ - admin-client (production)
 
-- http://34.69.213.76:5500/healthchecks#/healthchecks - watchdog-client (production)
+- http://34.69.213.76:5500/healthchecks - watchdog-client (production)
 
 But there are some features missing... That was the price... :D
