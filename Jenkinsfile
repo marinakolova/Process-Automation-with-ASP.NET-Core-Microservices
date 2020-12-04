@@ -6,6 +6,11 @@ pipeline {
 				echo "$GIT_BRANCH"
 			}
 		}
+		stage('Echo the branch') {
+			steps {
+				echo "$GIT_BRANCH"
+			}
+		}
 		stage('Run Unit Tests') {
 			steps {
 				powershell(script: """ 
@@ -88,7 +93,33 @@ pipeline {
 				}
 			}
 		}
+		stage('Test Deplopment') {
+			steps {
+				powershell(script: './Tests/ContainerTestsDev.ps1')
+			}
+		}
+		stage('Ask permission') {
+			when { branch 'main' }
+			steps {
+				script{
+					try {
+						timeout(time: 60, unit: 'SECONDS') {
+							input message: 'Do you want to release this build?',
+							parameters: [[$class: 'BooleanParameterDefinition',
+									defaultValue: false,
+									description: 'Ticking this box will do a release',
+									name: 'Release']]
+						}
+					} 
+					catch (err) {
+						def user = err.getCauses()[0].getUser()
+						echo 'Aborted by:\n ${user}'
+					}
+				}
+			}
+		}
 		stage('Deploy Production') {
+			when { branch 'main' }
 			steps {
 				withKubeConfig([credentialsId: 'ProductionServer', serverUrl: 'https://34.67.141.88']) {
 					powershell(script: 'kubectl apply -f ./.k8s/.environment/production.yml') 
