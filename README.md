@@ -8,3 +8,10 @@
 
 ##
 ![Jenkins-Pipeline-Build-Screenshot](https://raw.githubusercontent.com/marinakolova/Process-Automation-with-ASP.NET-Core-Microservices/main/Jenkins-Pipeline-Build-Screenshot.png)
+
+## Acknowledgments
+
+#### Thanks to [Ivaylo Kenov](https://github.com/ivaylokenov) for:
+- the demo source code
+- the amazing lectures in this SoftUni Course
+- the inspiration
